@@ -215,11 +215,5 @@ function isJWTValid(token) {
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
-    const token = localStorage.getItem('damabrava_token');
-    if (isJWTValid(token)) {
-        // Redirige directo a dashboard, incluso sin internet
-        window.location.href = '/dashboard';
-        return;
-    }
     inicializarApp();
 });

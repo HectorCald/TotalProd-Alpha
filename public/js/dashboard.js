@@ -546,7 +546,6 @@ function actualizarBotonesFooter() {
 
 
 document.addEventListener('DOMContentLoaded', async () => {
-    
     obtenerUsuarioActual();
     actualizarPermisos(usuarioInfo)
     overlayClick();
