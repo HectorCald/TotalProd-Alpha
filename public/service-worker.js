@@ -85,33 +85,32 @@ self.addEventListener('fetch', event => {
         return;
     }
     event.respondWith(
-        caches.match(event.request)
-            .then(response => {
-                if (response) {
-                    // Siempre responde desde el cache si existe
-                    return response;
-                }
-                // Solo si no está en cache, intenta la red
-                return fetch(event.request)
-                    .then(networkResponse => {
-                        // Opcional: guardar en cache si quieres cachear recursos nuevos
-                        // caches.open(CACHE_NAME).then(cache => cache.put(event.request, networkResponse.clone()));
-                        return networkResponse;
-                    })
-                    .catch(() => {
-                        // Si es una imagen, devolver imagen por defecto
-                        if (event.request.url.match(/\.(jpg|png|gif|jpeg|webp)$/)) {
-                            return caches.match('/img/no-image.jpg');
-                        }
-                        // Para otros recursos, devolver mensaje offline
-                        return new Response('No hay conexión a internet', {
-                            status: 503,
-                            statusText: 'Service Unavailable',
-                            headers: new Headers({
-                                'Content-Type': 'text/plain'
-                            })
-                        });
+        caches.match(event.request).then(response => {
+            if (response) {
+                // Siempre responde desde el cache si existe (rápido)
+                return response;
+            }
+            // Si no está en cache, intenta la red
+            return fetch(event.request)
+                .then(networkResponse => {
+                    // Opcional: guardar en cache si quieres cachear recursos nuevos
+                    // caches.open(CACHE_NAME).then(cache => cache.put(event.request, networkResponse.clone()));
+                    return networkResponse;
+                })
+                .catch(() => {
+                    // Si es una imagen, devolver imagen por defecto
+                    if (event.request.url.match(/\.(jpg|png|gif|jpeg|webp)$/)) {
+                        return caches.match('/img/no-image.jpg');
+                    }
+                    // Para otros recursos, devolver mensaje offline
+                    return new Response('No hay conexión a internet', {
+                        status: 503,
+                        statusText: 'Service Unavailable',
+                        headers: new Headers({
+                            'Content-Type': 'text/plain'
+                        })
                     });
-            })
+                });
+        })
     );
 });

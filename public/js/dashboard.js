@@ -543,26 +543,14 @@ function actualizarBotonesFooter() {
         }
     });
 }
-function isJWTValid(token) {
-    if (!token) return false;
-    try {
-        const payload = JSON.parse(atob(token.split('.')[1]));
-        // Opcional: chequear expiración
-        if (payload.exp && Date.now() >= payload.exp * 1000) {
-            return false;
-        }
-        return true;
-    } catch (e) {
-        return false;
-    }
-}
 
 
 document.addEventListener('DOMContentLoaded', async () => {
-    mostrarVistaCorrespondiente('dashboard')
+    
     obtenerUsuarioActual();
     actualizarPermisos(usuarioInfo)
     overlayClick();
     cargarAtajos();
     activarFooterBtns();
+    mostrarVistaCorrespondiente('dashboard')
 });
