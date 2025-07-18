@@ -145,7 +145,6 @@ async function obtenerTareas() {
 }
 async function obtenerProductos() {
     try {
-
         const productosAcopioCache = await obtenerLocal(PRODUCTOS_AC_DB, DB_NAME);
 
         if (productosAcopioCache.length > 0) {

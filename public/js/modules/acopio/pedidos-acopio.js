@@ -7,7 +7,7 @@ let carritoIngresosAcopio = new Map(JSON.parse(localStorage.getItem('damabrava_i
 
 const DB_NAME = 'damabrava_db';
 const PROVEEDOR_DB = 'proveedores';
-const PRODUCTOS_ALM_AC_DB = 'productos_alm_acopio';
+const PRODUCTOS_AC_DB = 'productos_acopio';
 const PEDIDOS_ACOPIO_DB = 'pedidos_acopio';
 
 
@@ -145,7 +145,7 @@ async function obtenerAlmacenAcopio() {
     try {
         mostrarCargaObtener();
 
-        const productoAcopioCache = await obtenerLocal(PRODUCTOS_ALM_AC_DB, DB_NAME);
+        const productoAcopioCache = await obtenerLocal(PRODUCTOS_AC_DB, DB_NAME);
 
         if (productoAcopioCache.length > 0) {
             productos = productoAcopioCache.sort((a, b) => {
@@ -177,9 +177,9 @@ async function obtenerAlmacenAcopio() {
 
                 (async () => {
                     try {
-                        const db = await initDB(PRODUCTOS_ALM_AC_DB, DB_NAME);
-                        const tx = db.transaction(PRODUCTOS_ALM_AC_DB, 'readwrite');
-                        const store = tx.objectStore(PRODUCTOS_ALM_AC_DB);
+                        const db = await initDB(PRODUCTOS_AC_DB, DB_NAME);
+                        const tx = db.transaction(PRODUCTOS_AC_DB, 'readwrite');
+                        const store = tx.objectStore(PRODUCTOS_AC_DB);
 
                         // Limpiar todos los registros existentes
                         await store.clear();

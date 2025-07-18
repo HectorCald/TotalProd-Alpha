@@ -1,36 +1,43 @@
 export async function initDB(STORE, DB) {
+    const ALL_STORES = [
+        'prductos_alm',
+        'pedidos_acopio',
+        'precios_alm',
+        'etiquetas_almacen',
+        'etiquetas_acopio',
+        'clientes',
+        'proveedores',
+        'nombres_usuarios',
+        'ordenes_produccion',
+        'registros_acopio',
+        'tareas_acopio',
+        'registros_tareas_acopio',
+        'tareas_acopio',
+        'etiquetas_web',
+        'precios_alm',
+        'precios_web',
+        'pagos',
+        'personal',
+        'productos_acopio',
+        'registros_almacen',
+        'registros-conteo',
+    ];
     return new Promise((resolve, reject) => {
-        // Abre la base sin versión (usa la más alta)
-        const request = indexedDB.open(DB);
+        const request = indexedDB.open(DB, 1); // Siempre usa versión 1
 
         request.onerror = () => reject(request.error);
 
         request.onsuccess = (event) => {
-            const db = event.target.result;
-            if (!db.objectStoreNames.contains(STORE)) {
-                db.close();
-                // Subir la versión para crear el store
-                const upgradeRequest = indexedDB.open(DB, db.version + 1);
-                upgradeRequest.onerror = () => reject(upgradeRequest.error);
-                upgradeRequest.onsuccess = (event) => {
-                    resolve(event.target.result);
-                };
-                upgradeRequest.onupgradeneeded = (event) => {
-                    const db = event.target.result;
-                    if (!db.objectStoreNames.contains(STORE)) {
-                        db.createObjectStore(STORE, { keyPath: 'id' });
-                    }
-                };
-            } else {
-                resolve(db);
-            }
+            resolve(event.target.result);
         };
 
         request.onupgradeneeded = (event) => {
             const db = event.target.result;
-            if (!db.objectStoreNames.contains(STORE)) {
-                db.createObjectStore(STORE, { keyPath: 'id' });
-            }
+            ALL_STORES.forEach(storeName => {
+                if (!db.objectStoreNames.contains(storeName)) {
+                    db.createObjectStore(storeName, { keyPath: 'id' });
+                }
+            });
         };
     });
 }
@@ -63,41 +70,41 @@ export function normalizarTexto(texto) {
 }
 
 
-export function mostrarScreen(){
+export function mostrarScreen() {
     const screen = document.querySelector('.screen')
     screen.classList.add('open')
     configuracionesEntrada()
     ocultarScreen2();
 }
-export function ocultarScreen(){
+export function ocultarScreen() {
     const screen = document.querySelector('.screen')
     screen.classList.remove('open')
     ocultarScreen2();
 }
-export function mostrarScreen2(){
+export function mostrarScreen2() {
     const screen = document.querySelector('.screen2')
     screen.classList.add('open')
     configuracionesEntrada()
 }
-export function ocultarScreen2(){
+export function ocultarScreen2() {
     const screen = document.querySelector('.screen2')
     screen.classList.remove('open')
 }
 
-export function mostrarCarga(){
+export function mostrarCarga() {
     const cargaContainer = document.querySelector('.carga')
     cargaContainer.classList.add('activo')
 }
-export function ocultarCarga(){
+export function ocultarCarga() {
     const cargaContainer = document.querySelector('.carga')
     cargaContainer.classList.remove('activo')
 }
 
-export function mostrarCargaObtener(){
+export function mostrarCargaObtener() {
     const cargaContainer = document.querySelector('.carga-obtener')
     cargaContainer.classList.add('activo')
 }
-export function ocultarCargaObtener(){
+export function ocultarCargaObtener() {
     const cargaContainer = document.querySelector('.carga-obtener')
     cargaContainer.classList.remove('activo')
 }
