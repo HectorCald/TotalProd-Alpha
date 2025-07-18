@@ -1,4 +1,4 @@
-const CACHE_NAME = 'TotalProd-v1';
+const CACHE_NAME = 'TotalProd-v2';
 
 const APP_SHELL = [
     '/',
