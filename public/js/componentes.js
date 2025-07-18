@@ -1,21 +1,20 @@
 export async function initDB(STORE, DB) {
     return new Promise((resolve, reject) => {
-        const request = indexedDB.open(DB);
+        const request = indexedDB.open(DB, 1);
 
         request.onerror = () => reject(request.error);
 
         request.onsuccess = (event) => {
             const db = event.target.result;
             if (!db.objectStoreNames.contains(STORE)) {
+                // Si falta el store, borra la base y recarga
                 db.close();
-                // Solo entonces haz upgrade
-                const upgradeRequest = indexedDB.open(DB, db.version + 1);
-                upgradeRequest.onupgradeneeded = (event) => {
-                    const db = event.target.result;
-                    db.createObjectStore(STORE, { keyPath: 'id' });
-                };
-                upgradeRequest.onsuccess = () => resolve(upgradeRequest.result);
-                upgradeRequest.onerror = () => reject(upgradeRequest.error);
+                indexedDB.deleteDatabase(DB);
+                // Espera un poco y recarga la página para forzar recreación
+                setTimeout(() => {
+                    window.location.reload();
+                }, 500);
+                reject(new Error(`Object store ${STORE} no existe. Base de datos borrada, recarga la página.`));
             } else {
                 resolve(db);
             }
