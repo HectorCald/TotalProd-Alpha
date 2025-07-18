@@ -1,0 +1,103 @@
+{
+  "name": "TotalProd",
+  "short_name": "TotalProd",
+  "description": "Gestion de procesos y ventas de productos",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#28b498",
+  "theme_color": "#28b498",
+  "form_factor": "wide",
+  "id": "TotalProd",
+  "orientation": "portrait",
+  "display_override": ["standalone"],
+  "categories": ["productivity", "business"],
+  "prefer_related_applications": true,
+  
+  "storage": {
+    "clearOnUninstall": true,
+    "preferences": "clear",
+    "cache": "clear"
+  },
+  
+  "permissions": [
+    "storage",
+    "unlimitedStorage",
+    "clearSiteData",
+    "geolocation",
+    "webauthn",
+    "push",
+    "notifications" 
+  ],
+
+  "related_applications": [
+    {
+      "platform": "play",
+      "id": "app.totalprod.twa",
+      "url": "https://play.google.com/store/apps/details?id=app.totalprod.twa",
+      "uninstall_action": {
+        "clear_data": true,
+        "clear_cache": true,
+        "remove_shortcuts": true
+      }
+    }
+  ],
+
+  "android_package": "app.totalprod.twa",
+  "play_store_data": {
+    "uninstall_behavior": {
+      "clear_app_data": true,
+      "clear_cache": true,
+      "remove_tasks": true
+    }
+  },
+
+  "screenshots": [
+    {
+      "src": "/screenshots/screenshot1.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Pantalla principal de InnoPro"
+    }
+  ],
+  "icons": [
+    {
+      "src": "/icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  
+  "shortcuts": [],
+  "dir": "ltr",
+  "iarc_rating_id": "",
+  "scope": "/",
+  "protocol_handlers": [
+    {
+      "protocol": "web+totalprod",
+      "url": "/%s"
+    }
+  ],
+  "edge_side_panel": {
+    "preferred_width": 400
+  }
+}

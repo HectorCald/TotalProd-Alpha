@@ -1,0 +1,126 @@
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+    font-family: 'Baloo 2', cursive;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    outline: none;
+}
+button,
+a {
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+body {
+    overflow: hidden;
+    background: linear-gradient(to bottom,
+            var(--cuarto) 50%,
+            transparent 50%);
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    width: 100%;
+    height: 100vh;
+    padding-inline: 10px;
+}
+
+
+:root {
+    --text: black;
+    --primero: rgb(23, 23, 23);
+    --segundo: #3a3a3a;
+    --tercero: #6a6a6a;
+    --quinto: #c0c0c0;
+    --sexto: #e0e0e0;
+    --cuarto: #2dc6a7;
+
+    --error: #ff0000;
+    --exito: #4ddb4d;
+    --warning: #ffa500;
+    --info: #0000ff;
+
+    --weight-regular: 300;
+    --weight-medium: 400;
+    --weight-semibold: 500;
+    --weight-bold: 600;
+
+    --text-pequeño: 12px;
+    --text-medio: 15px;
+    --text-grande: 18px;
+    --text-enorme: 21px;
+    --text-gigante: 24px;
+}
+
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+    /* Fondo transparente para mejor overlay */
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(128, 128, 128, 0.7);
+    /* Semi-transparente para mejor overlay */
+    border-radius: 10px;
+    border: 1px solid transparent;
+    /* Espacio adicional para que no toque el contenido */
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(128, 128, 128, 0.9);
+}
+
+/* Para Firefox - scrollbar overlay nativo */
+* {
+    user-select: none;
+    scrollbar-color: rgba(128, 128, 128, 0) transparent;
+    scrollbar-width: thin;
+
+
+    &:hover {
+        scrollbar-color: rgba(128, 128, 128, 0.7) transparent;
+    }
+}
+
+/* Opcional: Hacer el scrollbar más sutil cuando no está en uso */
+::-webkit-scrollbar-thumb {
+    opacity: 0.5;
+    transition: all 0.1s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    opacity: 1;
+}
+
+
+
+[data-theme="dark"] {
+    --text: #ffffff;
+    --fondo: #202020;
+    --fondo3: #2d2d2d;
+    --fondo4: #252525;
+    --fondo5: #1c1c1c;
+    --fondo2: #3c3c3c;
+    --primary-color: #2a2a2a;
+    --second-color: #ffffff;
+    --nov-color: #111111;
+    --cuarto-color: #28b498;
+    --cero-color: #2f2f2f !important;
+    --sep-color: #28b498;
+    --oct-color: rgb(34, 34, 34);
+    --dec-color: #ffffff;
+}

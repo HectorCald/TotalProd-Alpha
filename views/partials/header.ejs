@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui, viewport-fit=cover">
+    <title>TotalProd</title>
+    <link rel="icon" href="/icons/icon-192x192.png" type="image/png">
+
+    <!-- PWA Meta Tags -->
+    <link rel="manifest" href="/manifest.json" crossorigin="use-credentials">
+
+    <!-- Icons -->
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
+
+    
+    <link rel="stylesheet" href="./css/dashboard.css">
+</head>
+
+<body>
+    <div class="header">
+        <button class="perfil"><i class='bx bx-user' onclick="mostrarPerfil();"></i></button>
+        <h1>TotalProd</h1>
+        <button class="notificaciones" onclick="mostrarNotificaciones()"><i class='bx  bx-bell'></i> </button>
+    </div>
+    <div class="editar-perfil">
+        <p class="email">hi.hector@gmail.com</p>
+        <div class="info-perfil">
+            <div class="entrada">
+                <i class='bx bx-user'></i>
+                <div class="input">
+                    <p class="detalle">Nombre</p>
+                    <input type="text" class="nombre">
+                </div>
+            </div>
+            <div class="entrada">
+                <i class='bx bx-phone'></i>
+                <div class="input">
+                    <p class="detalle">Telefono</p>
+                    <input type="number" class="telefono">
+                </div>
+            </div>
+            <div class="entrada">
+                <i class='bx bx-lock'></i>
+                <div class="input">
+                    <p class="detalle">Contraseña</p>
+                    <input type="password" class="contraseña">
+                </div>
+            </div>
+            <div class="botones">
+                <button class="btn green guardar">Guardar cambios</button>
+                <button class="btn red cerrar-sesion"><i class='bx bx-log-out'></i></button>
+            </div>
+        </div>
+    </div>
+    <div class="notificaciones-container">
+        <div class="notificacion">
+            <p>Notificación 1</p>
+        </div>
+    </div>
+    <div class="funciones">
+        <div class="funcion">
+            <i class='bx bx-check'></i>
+            <p>Funcion 1</p>
+        </div>
+        <div class="funcion">
+            <i class='bx bx-check'></i>
+            <p>Funcion 2</p>
+        </div>
+        <div class="funcion">
+            <i class='bx bx-check'></i>
+            <p>Funcion 3</p>
+        </div>
+    </div>
+    <div class="overlay"></div>
+</body>
+
+</html>

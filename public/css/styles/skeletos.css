@@ -1,0 +1,69 @@
+.skeleton {
+    background: white;
+    background: linear-gradient(110deg,
+        #e0e0e0 8%,
+        #f5f7fa 18%,
+        #e0e0e0 33%
+    );
+    background-size: 200% 100%;
+    animation: 1.5s shine linear infinite;
+    border-radius: 4px;
+    
+}
+
+@keyframes shine {
+    to {
+        background-position-x: -200%;
+    }
+}
+
+.skeleton-etiqueta {
+    height: 25px;
+    min-width: 80px;
+    display: inline-block;
+    border-radius: 10px;
+}
+
+.skeleton-producto {
+    height: 80px;
+    padding: 10px;
+    border-radius: 10px;
+    background: white;
+    width: 100%;
+}
+
+.skeleton-header {
+    display: flex;
+    gap: 10px;
+}
+
+.skeleton-img {
+    width: 60px;
+    height: 60px;
+    flex-shrink: 0;
+    border-radius: 10px;
+}
+
+.skeleton-content {
+    flex-grow: 1;
+    height: 60px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.skeleton-line {
+    height: 12px;
+}
+
+.skeleton-line:nth-child(1) {
+    width: 100%;
+}
+
+.skeleton-line:nth-child(2) {
+    width: 70%;
+}
+
+.skeleton-line:nth-child(3) {
+    width: 40%;
+}

@@ -1,0 +1,137 @@
+<!-- ==================== HEADER Y NAVEGACIÓN ==================== -->
+<%- include('partials/header') %>
+    <div class="dashboard view">
+        <div class="top-view">
+            <div class="saludo">
+                <h1>Hola!</h1>
+                <p>Bienvenido de nuevo</p>
+            </div>
+            <p class="titulo">Tus atajos</p>
+            <div class="atajos-container">
+                <div class="atajos" id="atajos-principales">
+                    <button class="atajo-vacio"><i class='bx bx-plus'></i>
+                        <p>Agregar</p>
+                    </button>
+                    <button class="atajo-vacio"><i class='bx bx-plus'></i>
+                        <p>Agregar</p>
+                    </button>
+                    <button class="atajo-vacio"><i class='bx bx-plus'></i>
+                        <p>Agregar</p>
+                    </button>
+                    <button class="atajo-vacio"><i class='bx bx-plus'></i>
+                        <p>Agregar</p>
+                    </button>
+                    <button class="atajo-vacio"><i class='bx bx-plus'></i>
+                        <p>Agregar</p>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="contenido-view">
+            <div class="historial-item">
+                <i class='bx bx-clipboard'></i>
+                <div class="info">
+                    <p class="nombre">Orden 1</p>
+                    <p class="fecha">20/07/2025</p>
+                </div>
+                <i class='bx bx-chevron-right ir'></i>
+            </div>
+            <div class="historial-item">
+                <i class='bx bx-clipboard'></i>
+                <div class="info">
+                    <p class="nombre">Orden 2</p>
+                    <p class="fecha">20/07/2025</p>
+                </div>
+                <i class='bx bx-chevron-right ir'></i>
+            </div>
+            <div class="historial-item">
+                <i class='bx bx-clipboard'></i>
+                <div class="info">
+                    <p class="nombre">Orden 3</p>
+                    <p class="fecha">20/07/2025</p>
+                </div>
+                <i class='bx bx-chevron-right ir'></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="atajos-all" id="atajos-all-panel">
+        <div class="encabezado">
+            <p class="titulo">Atajos disponibles</p>
+            <button class="btn" style="max-width: 30px; max-height: 30px;" onclick="ocultarAtajosAll()"><i
+                    class='bx bx-x'></i></button>
+        </div>
+        <div class="atajos" id="atajos-todos"></div>
+    </div>
+    <div class="ordenes-cont view" style="display:none">
+        <p class="titulo">Tus ordenes</p>
+    </div>
+    <div class="clientes-cont view" style="display:none"></div>
+    <div class="proveedores-cont view" style="display:none"></div>
+    <div class="personal-cont view" style="display:none"></div>
+    <div class="pagos-cont view" style="display:none"></div>
+    <div class="catalogos-cont view" style="display:none"></div>
+    <div class="ajustes-cont view" style="display:none"></div>
+    <div class="paginaWeb-cont view" style="display:none"></div>
+
+    <div class="registros-produccion-cont view" style="display:none"></div>
+    <div class="mis-registros-produccion-cont view" style="display:none"></div>
+    <div class="reglas-cont view" style="display:none"></div>
+    <div class="formulario-produccion-cont view" style="display:none"></div>
+
+    <div class="almacen-acopio-cont view" style="display:none"></div>
+    <div class="pedidos-acopio-cont view" style="display:none"></div>
+    <div class="registros-acopio-cont view" style="display:none"></div>
+    <div class="tareas-acopio-cont view" style="display:none"></div>
+
+    <div class="registros-almacen-cont view" style="display:none"></div>
+    <div class="registros-conteo-almacen-cont view" style="display:none"></div>
+    <div class="almacen-general-cont view" style="display:none"></div>
+
+    <div class="screen"></div>
+    <div class="screen2"></div>
+
+    <div class="carga">
+        <img src="./img/brain-process.gif" alt="">
+        <p>Procesando, por favor espera…</p>
+
+        <div class="logo">
+            <img src="./icons/icon-192x192.png" alt="">
+            <div class="info-logo">
+                <p class="nombre-logo">TotalProd</p>
+                <p class="slogan-logo">Gestiona mejor, produce mas.</p>
+            </div>
+        </div>
+    </div>
+    <div class="carga-obtener" style="display: flex;">
+        <img src="./img/data-collection.gif" alt="">
+        <p>Obteniendo datos, por favor espera…</p>
+
+        <div class="logo">
+            <img src="./icons/icon-192x192.png" alt="">
+            <div class="info-logo">
+                <p class="nombre-logo">TotalProd</p>
+                <p class="slogan-logo">Gestiona mejor, produce mas.</p>
+            </div>
+        </div>
+    </div>
+    <div class="footer">
+        <button class="home-btn activo">
+            <i class='bx bx-home'></i>
+            <p>Inicio</p>
+        </button>
+        <button class="orden-btn">
+            <i class='bx bx-clipboard'></i>
+            <p>Ordenes</p>
+        </button>
+        <button class="funcion-btn" onclick="mostrarFunciones()">
+            <i class='bx  bx-extension'></i>
+            <p>Funciones</p>
+        </button>
+        <button class="configuracion-btn">
+            <i class='bx  bx-cog'></i>
+            <p>Configuración</p>
+        </button>
+    </div>
+    <script src="/js/dashboard.js" type="module"></script>
+    <%- include('partials/footer') %>

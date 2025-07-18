@@ -1,0 +1,72 @@
+.btn, .btn-fill{
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: var(--text-medio);
+    font-weight: var(--weight-semibold);
+    white-space: nowrap;
+    width: 100%;
+    color: var(--primero);
+    padding: 5px 10px;
+    border-radius:15px;
+    background-color: var(--fondo);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    height: 40px;
+    
+
+    i{
+        font-size: 20px;
+        font-weight: var(--weight-semibold);
+    }
+}
+.btn-fill.green{
+    background-color: var(--exito);
+    color: white;
+
+    i{
+        color: white;
+    }
+}
+.btn-fill.origin{
+    background-color: var(--cuarto);
+    color: white;
+
+    i{
+        color: white;
+    }
+}
+
+.btn.red{
+    background-color: rgba(255, 0, 0, 0.137);
+    color: var(--error);
+}
+.btn.red-delgado{
+    border: 1px solid var(--error);
+    color: var(--error);
+    font-size: bold ;
+}
+.btn.green{
+    background-color:  rgba(0, 255, 0, 0.122);
+    color: var(--exito);
+}
+.btn.blue{
+    background-color:  rgba(32, 122, 247, 0.126);
+    color: rgb(32, 121, 247);
+}
+.btn.orange{
+    background-color:rgba(255, 166, 0, 0.115);
+    color: orange;
+}
+.btn.trans{
+    background-color: #28b49824;
+    color: var(--cuarto);
+}
+
+
+.botones-container{
+    display: flex;
+    gap: 5px;
+}

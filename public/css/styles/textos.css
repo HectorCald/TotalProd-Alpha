@@ -1,0 +1,18 @@
+.titulo{
+    font-size: var(--text-grande);
+    font-weight: var(--weight-semibold);
+    line-height: 1;
+    width: 160px;
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.subtitulo{
+    font-size: var(--text-medio);
+    font-weight: var(--weight-semibold);
+    line-height: 1;
+    width: 100%;
+    padding-block: 5px;
+    text-align: left;
+}
