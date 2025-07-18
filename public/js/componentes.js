@@ -1,20 +1,26 @@
 export async function initDB(STORE, DB) {
     return new Promise((resolve, reject) => {
-        const request = indexedDB.open(DB, 1);
+        // Abre la base sin versión (usa la más alta)
+        const request = indexedDB.open(DB);
 
         request.onerror = () => reject(request.error);
 
         request.onsuccess = (event) => {
             const db = event.target.result;
             if (!db.objectStoreNames.contains(STORE)) {
-                // Si falta el store, borra la base y recarga
                 db.close();
-                indexedDB.deleteDatabase(DB);
-                // Espera un poco y recarga la página para forzar recreación
-                setTimeout(() => {
-                    window.location.reload();
-                }, 500);
-                reject(new Error(`Object store ${STORE} no existe. Base de datos borrada, recarga la página.`));
+                // Subir la versión para crear el store
+                const upgradeRequest = indexedDB.open(DB, db.version + 1);
+                upgradeRequest.onerror = () => reject(upgradeRequest.error);
+                upgradeRequest.onsuccess = (event) => {
+                    resolve(event.target.result);
+                };
+                upgradeRequest.onupgradeneeded = (event) => {
+                    const db = event.target.result;
+                    if (!db.objectStoreNames.contains(STORE)) {
+                        db.createObjectStore(STORE, { keyPath: 'id' });
+                    }
+                };
             } else {
                 resolve(db);
             }
