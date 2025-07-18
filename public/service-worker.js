@@ -1,7 +1,8 @@
-const CACHE_NAME = 'TotalProd-v5';
+const CACHE_NAME = 'TotalProd-v6';
 
 const APP_SHELL = [
     '/',
+    '/dashboard',
     '/css/dashboard.css',
     '/css/login.css',
     '/css/estilos-base.css',
