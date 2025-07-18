@@ -499,12 +499,12 @@ export async function mostrarAlmacenGeneral() {
     renderInitialHTML();
 
     const [etiquetas, precios, clientes, proveedores, nombres, acopio, almacen, eventos] = await Promise.all([
-        obtenerEtiquetas(),
-        obtenerPrecios(),
-        obtenerClientes(),
-        obtenerProveedores(),
-        obtenerNombresUsuarios(),
-        obtenerAlmacenAcopio(),
+        await obtenerEtiquetas(),
+        await obtenerPrecios(),
+        await obtenerClientes(),
+        await obtenerProveedores(),
+        await obtenerNombresUsuarios(),
+        await obtenerAlmacenAcopio(),
         await obtenerAlmacenGeneral(),
     ]);
 
