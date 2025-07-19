@@ -11,7 +11,13 @@
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
     outline: none;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
 }
+*::-webkit-scrollbar {
+    display: none; /* Chrome, Safari */
+  }
+
 button,
 a {
     user-select: none;

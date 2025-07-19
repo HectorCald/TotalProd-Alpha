@@ -4,7 +4,38 @@
 <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 
-
+<script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/service-worker.js')
+          .then(registration => {
+            console.log('✅ Service Worker registrado con éxito:', registration.scope);
+  
+            // Escucha actualizaciones del SW
+            registration.onupdatefound = () => {
+              const newWorker = registration.installing;
+              console.log('🔄 Nueva versión del Service Worker detectada.');
+              newWorker.onstatechange = () => {
+                if (newWorker.state === 'installed') {
+                  if (navigator.serviceWorker.controller) {
+                    console.log('ℹ️ Nueva versión lista. Puedes recargar para actualizar.');
+                    // Aquí podrías mostrar un mensaje al usuario para recargar
+                  } else {
+                    console.log('🚀 Service Worker instalado por primera vez.');
+                  }
+                }
+              };
+            };
+          })
+          .catch(error => {
+            console.error('❌ Error al registrar Service Worker:', error);
+          });
+      });
+    } else {
+      console.warn('⚠️ Este navegador no soporta Service Workers.');
+    }
+  </script>
+  
 </body>
 
 </html>

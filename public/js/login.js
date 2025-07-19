@@ -12,7 +12,6 @@ function iniciarSesion() {
 
             // Basic validation
             if (!email || !password) {
-                
                 return;
             }
 
@@ -39,7 +38,8 @@ function iniciarSesion() {
                 const data = await response.json();
 
                 if (data.success) {
-                    mostrarNotificacion('Login exitoso',{tipo:'exito', duracion:2000})
+                    mostrarNotificacion('Login exitoso', {tipo:'exito', duracion:2000});
+                    
                     if (rememberMe) {
                         localStorage.setItem('credentials', JSON.stringify({
                             email: cleanEmail,
@@ -49,20 +49,53 @@ function iniciarSesion() {
                         localStorage.removeItem('credentials');
                     }
 
+                    // MEJORA: Guardar estado de autenticación para uso offline
+                    localStorage.setItem('lastLogin', JSON.stringify({
+                        timestamp: Date.now(),
+                        redirect: data.redirect,
+                        user: data.user
+                    }));
+
                     setTimeout(() => {
                         window.location.href = data.redirect;
                     }, 1000);
                 } else {
                     // Verificar si es un mensaje de cuenta en proceso
                     if (data.status === 'pending') {
-                        mostrarNotificacion('Tu cuenta esta siendo procesada por la empresa')
+                        mostrarNotificacion('Tu cuenta esta siendo procesada por la empresa');
                     } else {
-                        mostrarNotificacion('Contraseña o email incorrecto',{tipo:'error'})
+                        mostrarNotificacion('Contraseña o email incorrecto', {tipo:'error'});
                     }
                     ocultarCargaObtener();
                 }
             } catch (error) {
                 console.error('Error:', error);
+                
+                // MEJORA: Manejo de errores offline
+                if (!navigator.onLine) {
+                    mostrarNotificacion('Sin conexión a internet. Verificando credenciales locales...', {tipo:'info'});
+                    
+                    // Intentar validación offline básica
+                    const lastLogin = JSON.parse(localStorage.getItem('lastLogin') || '{}');
+                    const savedCredentials = JSON.parse(localStorage.getItem('credentials') || '{}');
+                    
+                    if (savedCredentials.email === cleanEmail && 
+                        savedCredentials.password === password && 
+                        lastLogin.timestamp && 
+                        (Date.now() - lastLogin.timestamp) < (7 * 24 * 60 * 60 * 1000)) { // 7 días
+                        
+                        mostrarNotificacion('Acceso offline autorizado', {tipo:'exito', duracion:2000});
+                        setTimeout(() => {
+                            window.location.href = lastLogin.redirect || '/dashboard';
+                        }, 1000);
+                    } else {
+                        mostrarNotificacion('No se puede verificar credenciales offline', {tipo:'error'});
+                        ocultarCargaObtener();
+                    }
+                } else {
+                    mostrarNotificacion('Error de conexión. Intenta nuevamente.', {tipo:'error'});
+                    ocultarCargaObtener();
+                }
             }
         });
 
@@ -199,19 +232,6 @@ function inicializarApp() {
 
 
     iniciarSesion();
-}
-function isJWTValid(token) {
-    if (!token) return false;
-    try {
-        const payload = JSON.parse(atob(token.split('.')[1]));
-        // Opcional: chequear expiración
-        if (payload.exp && Date.now() >= payload.exp * 1000) {
-            return false;
-        }
-        return true;
-    } catch (e) {
-        return false;
-    }
 }
 
 document.addEventListener('DOMContentLoaded', async () => {

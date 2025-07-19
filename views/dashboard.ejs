@@ -134,4 +134,20 @@
         </button>
     </div>
     <script src="/js/dashboard.js" type="module"></script>
+    <script>
+        // Verificación básica para PWA offline
+        document.addEventListener('DOMContentLoaded', () => {
+            // Si no hay conexión, verificar último login válido
+            if (!navigator.onLine) {
+                const lastLogin = JSON.parse(localStorage.getItem('lastLogin') || '{}');
+                
+                if (!lastLogin.timestamp || (Date.now() - lastLogin.timestamp) > (7 * 24 * 60 * 60 * 1000)) {
+                    // Si han pasado más de 7 días sin login, redirigir
+                    window.location.href = '/';
+                }
+            }
+            
+            // El resto de tu código de inicialización del dashboard...
+        });
+        </script>
     <%- include('partials/footer') %>

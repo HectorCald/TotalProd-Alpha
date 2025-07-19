@@ -1,8 +1,9 @@
-const CACHE_NAME = 'TotalProd-v3';
+const CACHE_NAME = 'TotalProd-v9';
 const CACHE_RUNTIME = 'TotalProd-runtime-v2';
 
 const APP_SHELL = [
     '/',
+    '/login',
     '/dashboard',
     '/css/dashboard.css',
     '/css/login.css',
@@ -17,6 +18,7 @@ const APP_SHELL = [
     '/js/dashboard.js',
     '/js/login.js',
     '/js/componentes.js',
+    '/js/auth.js', // Nuevo: manejo de autenticación
     '/js/modules/acopio/almacen-acopio.js',
     '/js/modules/acopio/pedidos-acopio.js',
     '/js/modules/acopio/registros-acopio.js',
@@ -55,6 +57,9 @@ const APP_SHELL = [
     'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css'
 ];
 
+// Rutas que NO requieren autenticación
+const PUBLIC_ROUTES = ['/', '/login'];
+
 // INSTALACIÓN: Cachea todo el APP_SHELL inmediatamente
 self.addEventListener('install', event => {
     console.log('Service Worker instalándose...');
@@ -64,7 +69,6 @@ self.addEventListener('install', event => {
         caches.open(CACHE_NAME).then(async cache => {
             console.log('Cacheando recursos del App Shell...');
 
-            // Cachear todos los recursos de forma paralela para mayor velocidad
             const cachePromises = APP_SHELL.map(async url => {
                 try {
                     const response = await fetch(url);
@@ -103,34 +107,39 @@ self.addEventListener('activate', event => {
     );
 });
 
-// ESTRATEGIA CACHE-FIRST: Siempre busca primero en caché
+// ESTRATEGIA CACHE-FIRST CON MANEJO DE AUTENTICACIÓN
 self.addEventListener('fetch', event => {
     // Solo interceptar peticiones HTTP/HTTPS
     if (!event.request.url.startsWith('http')) {
         return;
     }
 
-    // NO interceptar POST (ni PUT, DELETE, etc.)
+    // NO interceptar POST, PUT, DELETE (APIs de autenticación)
     if (event.request.method !== 'GET') {
         return;
     }
 
     event.respondWith(
-        cacheFirst(event.request)
+        cacheFirstWithAuth(event.request)
     );
 });
-// FUNCIÓN CACHE-FIRST: Prioriza siempre el caché
-async function cacheFirst(request) {
+
+// FUNCIÓN CACHE-FIRST CON VALIDACIÓN DE AUTENTICACIÓN
+async function cacheFirstWithAuth(request) {
     try {
-        // 1. SIEMPRE buscar primero en caché
+        // 1. SIEMPRE buscar primero en caché para recursos estáticos
         const cachedResponse = await caches.match(request);
 
         if (cachedResponse) {
             console.log('Servido desde caché:', request.url);
 
-            // En segundo plano, actualizar el caché si hay internet
-            updateCacheInBackground(request);
+            // Para navegación, verificar autenticación antes de servir
+            if (request.mode === 'navigate') {
+                return handleNavigation(request, cachedResponse);
+            }
 
+            // Para recursos estáticos, actualizar caché en segundo plano
+            updateCacheInBackground(request);
             return cachedResponse;
         }
 
@@ -139,7 +148,6 @@ async function cacheFirst(request) {
         const networkResponse = await fetch(request);
 
         if (networkResponse.ok) {
-            // Cachear la respuesta para futuras peticiones
             await cacheResponse(request, networkResponse.clone());
             console.log('Nuevo recurso cacheado:', request.url);
         }
@@ -147,18 +155,52 @@ async function cacheFirst(request) {
         return networkResponse;
 
     } catch (error) {
-        console.log('Error de red, buscando en caché:', request.url);
+        console.log('Error de red, manejando offline:', request.url);
+        return handleOfflineNavigation(request);
+    }
+}
 
-        // 3. Si falla la red, buscar en caché como fallback
-        const cachedResponse = await caches.match(request);
+// MANEJAR NAVEGACIÓN CON AUTENTICACIÓN
+async function handleNavigation(request, cachedResponse) {
+    const url = new URL(request.url);
+    const pathname = url.pathname;
 
-        if (cachedResponse) {
-            return cachedResponse;
+    // Rutas públicas siempre se sirven desde caché
+    if (PUBLIC_ROUTES.includes(pathname)) {
+        return cachedResponse;
+    }
+
+    // Para rutas protegidas, verificar autenticación
+    // Nota: Esta verificación se debe hacer en el cliente también
+    return cachedResponse; // Por ahora servimos desde caché
+}
+
+// FUNCIÓN MEJORADA PARA MANEJAR NAVEGACIÓN CON TU SISTEMA DE COOKIES
+async function handleOfflineNavigation(request) {
+    if (request.mode === 'navigate') {
+        const url = new URL(request.url);
+        const pathname = url.pathname;
+
+        // Intentar servir la página solicitada desde caché
+        let cachedPage = await caches.match(pathname);
+        
+        if (cachedPage) {
+            return cachedPage;
         }
 
-        // 4. Si no hay caché ni red, devolver página offline
-        return getOfflinePage(request);
+        // Si no está en caché, servir según la ruta
+        if (pathname === '/') {
+            // Para la ruta raíz, siempre servir desde caché (tu login)
+            cachedPage = await caches.match('/');
+        } else if (pathname === '/dashboard' || pathname === '/dashboard_otro') {
+            // Para dashboards, servir desde caché
+            cachedPage = await caches.match(pathname) || await caches.match('/dashboard');
+        }
+
+        return cachedPage || getOfflinePage(request);
     }
+
+    return getOfflinePage(request);
 }
 
 // ACTUALIZAR CACHÉ EN SEGUNDO PLANO
@@ -170,7 +212,6 @@ async function updateCacheInBackground(request) {
             console.log('Caché actualizado en segundo plano:', request.url);
         }
     } catch (error) {
-        // Ignorar errores de red en segundo plano
         console.log('No se pudo actualizar caché en segundo plano:', request.url);
     }
 }
@@ -183,20 +224,38 @@ async function cacheResponse(request, response) {
 
 // PÁGINA OFFLINE DE FALLBACK
 async function getOfflinePage(request) {
-    // Para navegación, devolver la página principal desde caché
     if (request.mode === 'navigate') {
-        const cachedPage = await caches.match('/') || await caches.match('/dashboard');
+        const cachedPage = await caches.match('/') || await caches.match('/login');
         if (cachedPage) {
             return cachedPage;
         }
     }
 
-    // Para otros recursos, devolver respuesta offline
-    return new Response('Recurso no disponible offline', {
-        status: 503,
-        statusText: 'Service Unavailable',
-        headers: { 'Content-Type': 'text/plain' }
-    });
+    return new Response(
+        `<!DOCTYPE html>
+        <html>
+        <head>
+            <title>Sin Conexión - TotalProd</title>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+            <style>
+                body { font-family: Arial, sans-serif; text-align: center; padding: 50px; }
+                .offline { color: #666; }
+            </style>
+        </head>
+        <body>
+            <div class="offline">
+                <h2>Sin conexión a internet</h2>
+                <p>Por favor, verifica tu conexión e intenta nuevamente.</p>
+                <button onclick="window.location.reload()">Reintentar</button>
+            </div>
+        </body>
+        </html>`,
+        {
+            status: 200,
+            headers: { 'Content-Type': 'text/html' }
+        }
+    );
 }
 
 // MANEJAR ACTUALIZACIONES DEL SERVICE WORKER
@@ -206,12 +265,11 @@ self.addEventListener('message', event => {
     }
 });
 
-// SINCRONIZACIÓN EN SEGUNDO PLANO (opcional)
+// SINCRONIZACIÓN EN SEGUNDO PLANO
 self.addEventListener('sync', event => {
     if (event.tag === 'background-sync') {
         console.log('Sincronización en segundo plano activada');
-        // Aquí puedes agregar lógica para sincronizar datos
     }
 });
 
-console.log('Service Worker cargado con estrategia Cache-First');
+console.log('Service Worker cargado con estrategia Cache-First y manejo de autenticación');

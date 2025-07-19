@@ -305,14 +305,13 @@
         justify-content: space-between;
         padding-inline: 10px;
         width: 100%;
-        font-size: var(--text-pequeño);
+        font-size: var(--text-pequeño) !important;
 
         span {
             display: flex;
             justify-content: center;
             align-items: center;
             gap: 5px;
-
         }
     }
 }
