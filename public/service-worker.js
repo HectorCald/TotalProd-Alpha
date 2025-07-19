@@ -1,5 +1,5 @@
-const CACHE_NAME = 'TotalProd-v5';
-const CACHE_RUNTIME = 'TotalProd-runtime-v5';
+const CACHE_NAME = 'TotalProd-v7';
+const CACHE_RUNTIME = 'TotalProd-runtime-v7';
 
 const APP_SHELL = [
     '/',
@@ -55,7 +55,6 @@ const APP_SHELL = [
     'https://cdn.jsdelivr.net/npm/boxicons@2.0.7/fonts/boxicons.woff2',
     'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css'
 ];
-
 // INSTALACIÓN: Cachea recursos críticos solamente
 self.addEventListener('install', event => {
     console.log('Service Worker instalándose...');
@@ -120,19 +119,12 @@ self.addEventListener('fetch', event => {
     if (!event.request.url.startsWith('http')) return;
     if (event.request.method !== 'GET') return;
 
-    // Solo interceptar recursos estáticos y navegación
-    const isStatic = /\.(css|js|png|jpg|jpeg|gif|webp|svg|ico|woff|woff2)$/i.test(event.request.url);
-    const isNavigation = event.request.mode === 'navigate';
-    if (!isStatic && !isNavigation) {
-        // NO interceptar APIs ni endpoints de datos, deja que el navegador haga la petición normal
-        return;
-    }
+    // NO interceptar APIs
+    if (event.request.url.includes('/api/') || event.request.url.includes('/iniciar-sesion')) return;
 
     event.respondWith(
         caches.match(event.request).then(cachedResponse => {
-            // Si está en cache, responde del cache
             if (cachedResponse) return cachedResponse;
-            // Si no está en cache, intenta la red
             return fetch(event.request).then(networkResponse => {
                 if (networkResponse && networkResponse.ok) {
                     const responseClone = networkResponse.clone();
@@ -141,10 +133,7 @@ self.addEventListener('fetch', event => {
                     });
                 }
                 return networkResponse;
-            }).catch(() => {
-                // Si la red falla, intenta el cache de nuevo (por si acaso)
-                return caches.match(event.request).then(fallback => fallback || new Response('', { status: 404 }));
-            });
+            }).catch(() => new Response('', { status: 404 }));
         })
     );
 });

@@ -559,7 +559,7 @@ function actualizarBotonesFooter() {
 
 
 document.addEventListener('DOMContentLoaded', async () => {
-    await obtenerUsuarioActual();
+    obtenerUsuarioActual();
     overlayClick();
     cargarAtajos();
     activarFooterBtns();
