@@ -1,0 +1,12 @@
+<%- include('partials/header') %>
+<script>
+  // Busca el token en localStorage (PWA moderno)
+  const token = localStorage.getItem('auth_token');
+  console.log('TOKEN EN LOCALSTORAGE:', token);
+  if (token) {
+    window.location.href = '/dashboard';
+  } else {
+    window.location.href = '/login';
+  }
+</script>
+<%- include('partials/footer') %>

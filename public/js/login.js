@@ -37,6 +37,9 @@ function iniciarSesion() {
                 }
 
                 const data = await response.json();
+                if (data.token) {
+                    localStorage.setItem('auth_token', data.token);
+                }
 
                 if (data.success) {
                     mostrarNotificacion('Login exitoso',{tipo:'exito', duracion:2000})

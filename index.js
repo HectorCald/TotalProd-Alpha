@@ -162,30 +162,15 @@ async function enviarNotificacion(token, titulo, mensaje) {
 
 /* ==================== RUTAS DE VISTAS ==================== */
 app.get('/', (req, res) => {
-    const token = req.cookies.token;
-
-    if (token) {
-        try {
-            const decoded = jwt.verify(token, JWT_SECRET);
-            // Determine dashboard URL based on spreadsheet ID from token
-            const dashboardUrl = decoded.spreadsheetId === process.env.SPREADSHEET_ID_1
-                ? '/dashboard'
-                : '/dashboard_otro';
-            return res.redirect(dashboardUrl);
-        } catch (error) {
-            // Token inválido, continuar al login
-        }
-    }
-
     res.redirect('/login')
-});
-app.get('/dashboard', requireAuth, (req, res) => {
-    res.render('dashboard')
 });
 app.get('/login', (req, res) => {
     res.render('login')
 });
-app.get('/dashboard_otro', requireAuth, (req, res) => {
+app.get('/dashboard', (req, res) => {
+    res.render('dashboard')
+});
+app.get('/dashboard_otro', (req, res) => {
     res.render('dashboard_otro')
 });
 
@@ -356,31 +341,29 @@ app.post('/iniciar-sesion', async (req, res) => {
                     if (usuario[3] === 'Activo') {
                         const token = jwt.sign(
                             {
-                                email: usuario[7], // Ensure correct email index
+                                email: usuario[7],
                                 nombre: usuario[1],
                                 spreadsheetId
                             },
                             JWT_SECRET,
                             { expiresIn: '89280h' }
                         );
-
-                        res.cookie('token', token, {
-                            httpOnly: true,
-                            secure: true,
-                            maxAge: 10 * 365 * 24 * 60 * 60 * 1000 // 10 años en milisegundos
-                        });
-
+                
+                        // NO SETEES LA COOKIE
+                
                         // Determine dashboard URL based on spreadsheet ID
                         const dashboardUrl = spreadsheetId === process.env.SPREADSHEET_ID_1 ? '/dashboard' : '/dashboard_otro';
-
+                
                         return res.json({
                             success: true,
+                            token, // <-- ¡Asegúrate de incluir esto!
                             redirect: dashboardUrl,
                             user: {
                                 nombre: usuario[1],
-                                email: usuario[7] // Ensure correct email index
+                                email: usuario[7]
                             }
                         });
+                    
                     } else {
                         return res.json({
                             success: false,
