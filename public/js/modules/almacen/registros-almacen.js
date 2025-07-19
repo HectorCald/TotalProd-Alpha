@@ -284,7 +284,7 @@ function updateHTMLWithData() {
                 <i class='bx bx-file'></i>
                 <div class="info-header">
                     <span class="id-flotante"><span class="id">${registro.id}</span><span class="flotante-view ${registro.tipo === 'Ingreso' ? 'green' : registro.tipo === 'Salida' ? 'red' : 'orange'}">${registro.tipo}</span></span>
-                    <span class="detalle"><span>${registro.nombre_movimiento}</span></span>
+                    <span class="detalle">${registro.nombre_movimiento}</span>
                     <span class="pie">${registro.fecha_hora} <span class="neutro">Bs. ${registro.total}</span></span>
                 </div>
             </div>

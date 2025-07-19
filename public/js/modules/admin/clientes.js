@@ -125,7 +125,7 @@ function updateHTMLWithData() {
                 <i class='bx bx-id-card'></i>
                 <div class="info-header">
                     <span class="id-flotante"><span class="id">${cliente.id}</span><span class="flotante-view neutro">${cliente.zona ? cliente.zona : 'No tiene zona'}</span></span>
-                    <span class="detalle"><strong>${cliente.nombre}</strong></span>
+                    <span class="detalle">${cliente.nombre}</span>
                     <span class="pie">${cliente.telefono}-${cliente.direccion ? cliente.direccion : 'No tiene dirección'}</span>
                 </div>
             </div>

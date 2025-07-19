@@ -260,7 +260,7 @@ function updateHTMLWithData() {
                     <i class='bx bx-package'></i>
                     <div class="info-header">
                         <span class="id-flotante"><span class="id">${producto.id}</span><span style=display:flex;><span class="flotante-view orange stock">${totalBruto.toFixed(2)} Kg.</span><span class="carrito-cantidad" ${mostrarCantidad}>${cantidadEnCarrito > 0 ? cantidadEnCarrito : ''}</span></span></span>
-                        <span class="detalle"><span>${producto.producto}</span></span>
+                        <span class="detalle">${producto.producto}</span>
                         <span class="pie">${producto.etiquetas ? producto.etiquetas.split(';').join(' • ') : ''}</span>
                     </div>
                 </div>

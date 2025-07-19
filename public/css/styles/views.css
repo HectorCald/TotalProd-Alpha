@@ -4,10 +4,9 @@
     align-items: center;
     justify-content: flex-start !important;
     width: 100%;
-    height: calc(100% - 130px);
+    max-height: calc(100% - 130px);
     margin-top: 50px;
     opacity: 0;
-    transform: translateY(40px); /* Cambia de scale a translateY para animar desde abajo */
     z-index: 0;
     border-radius: 25px ;
     background-color: rgb(239, 239, 239);
@@ -18,7 +17,6 @@
 
 .view.visible {
     opacity: 1;
-    transform: translateY(0); /* Llega a su posición original */
 }
 .top-view{
     width: 100%;

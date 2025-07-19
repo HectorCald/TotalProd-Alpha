@@ -289,7 +289,7 @@ function updateHTMLWithData() {
                 <i class='bx bx-task'></i>
                 <div class="info-header">
                     <span class="id-flotante"><span class="id">${registro.id}</span><span class="flotante-view ${registro.hora_fin ? 'green' : 'red'}">${registro.hora_fin ? restarHoras(registro.hora_inicio, registro.hora_fin) : 'Pendiente'}</span></span>
-                    <span class="detalle"><span>${registro.producto}</span></span>
+                    <span class="detalle">${registro.producto}</span>
                     <span class="pie">${registro.operador}</span>
                 </div>
             </div>

@@ -521,7 +521,7 @@ function renderInitialHTML() {
                 </div>
                  
                 <div class="botones-container">
-                    ${tienePermiso('creacion') && tipoEvento === 'almacen' ? `
+                    ${tienePermiso('creacion') && tipoEvento === 'Administración' ? `
                     <button class="btn-crear-producto btn trans"> <i class='bx bx-plus'></i></button>
                     <button class="btn-etiquetas btn blue"><i class='bx bx-purchase-tag'></i></button>
                     <button class="btn-precios btn orange"><i class='bx bx-dollar'></i></button>
@@ -665,7 +665,7 @@ async function updateHTMLWithData() {
                     ${imagenMostrar}
                     <div class="info-header">
                         <span class="id-flotante"><span class="id">${producto.id}</span><span style="display:none">${producto.stock} Und.</span><input type="number" class="stock-fisico" value="${producto.stock}" min="0"></span>
-                        <span class="detalle"><strong>${producto.producto} - ${producto.gramos}gr.</strong></span>
+                        <span class="detalle">${producto.producto} - ${producto.gramos}gr.</span>
                         <span class="pie">${producto.etiquetas.split(';').join(' • ')}</span>
                     </div>
                 </div>

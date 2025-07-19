@@ -155,7 +155,7 @@ function updateHTMLWithData() {
                 <i class='bx bx-file'></i>
                 <div class="info-header">
                     <span class="id-flotante"><span class="id">${registro.id}</span><span class="flotante-view ${registro.estado === 'Pendiente' ? 'red' : registro.estado === 'Pagado' ? 'green' : 'orange'}">${registro.estado}</span></span>
-                    <span class="detalle"><strong>${registro.nombre_pago} (${registro.beneficiario})</strong></span>
+                    <span class="detalle">${registro.nombre_pago} (${registro.beneficiario})</span>
                     <span class="pie">${registro.fecha}<span class="neutro">Bs. ${registro.total}</span></span>
                 </div>
             </div>
@@ -765,16 +765,18 @@ function eventosPagos() {
     function nuevoPagoGenerico() {
         const contenido = document.querySelector('.screen');
         const registrationHTML = `
-        
-            <div class="encabezado">
-                <div class="titulo-back">
-                    <button class="atras-screen" onclick="ocultarScreen();"><i class='bx bx-arrow-back'></i></button>
-                    <p class="titulo">Nuevo pago</p>
+                <div class="top-view">
+                    <div class="encabezado">
+                        <div class="titulo-back">
+                            <button class="atras-screen" onclick="ocultarScreen();"><i class='bx bx-arrow-back'></i></button>
+                            <p class="titulo">Nuevo pago</p>
+                        </div>
+                        <div class="botones-container">
+                            <button class="btn-guardar btn green"><i class='bx bx-save'></i> Guardar Pago</button>
+                        </div>
+                    </div>
                 </div>
-                <div class="botones-container">
-                    <button class="btn-guardar btn green"><i class='bx bx-save'></i> Guardar Pago</button>
-                </div>
-            </div>
+            
                 <form id="formNuevoPago" class="contenido">
                     <p class="subtitulo">Información General</p>
                     <div class="entrada">
