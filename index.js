@@ -162,7 +162,7 @@ async function enviarNotificacion(token, titulo, mensaje) {
 
 /* ==================== RUTAS DE VISTAS ==================== */
 app.get('/', (req, res) => {
-    res.redirect('/login')
+    res.render('start')
 });
 app.get('/login', (req, res) => {
     res.render('login')

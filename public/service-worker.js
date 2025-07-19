@@ -1,5 +1,5 @@
-const CACHE_NAME = 'TotalProd-v3';
-const CACHE_RUNTIME = 'TotalProd-runtime-v3';
+const CACHE_NAME = 'TotalProd-v4';
+const CACHE_RUNTIME = 'TotalProd-runtime-v4';
 
 const APP_SHELL = [
     '/',

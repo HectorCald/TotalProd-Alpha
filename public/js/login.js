@@ -205,10 +205,11 @@ function inicializarApp() {
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
-    inicializarApp();
     const token = localStorage.getItem('auth_token');
     console.log('TOKEN EN LOCALSTORAGE:', token);
     if (token) {
         window.location.href = '/dashboard';
     }
+    inicializarApp();
+    
 });
