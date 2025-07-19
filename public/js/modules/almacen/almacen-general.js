@@ -521,11 +521,11 @@ function renderInitialHTML() {
                 </div>
                  
                 <div class="botones-container">
-
+                    ${tipoEvento === 'almacen' && tienePermiso('creacion')? `
                     <button class="btn-crear-producto btn trans"> <i class='bx bx-plus'></i></button>
                     <button class="btn-etiquetas btn blue"><i class='bx bx-purchase-tag'></i></button>
                     <button class="btn-precios btn orange"><i class='bx bx-dollar'></i></button>
-
+                    ` : ''}
                     ${tipoEvento === 'conteo' ? `<button class="vista-previa btn orange"><i class='bx bx-show'></i></button>` : ''}
                     ${tipoEvento === 'salidas' ? `<button class="btn-flotante-salidas btn blue" style="position:relative" onlclick="mostrarCarritoSalidas()"><i class="bx bx-cart"></i></button>` : ''}
                     ${tipoEvento === 'ingresos' ? `<button class="btn-flotante-ingresos btn blue" style="position:relative" onlclick="mostrarCarritoSalidas()"><i class="bx bx-cart"></i></button>` : ''}

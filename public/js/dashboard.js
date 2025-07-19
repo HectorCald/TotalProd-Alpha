@@ -360,6 +360,7 @@ async function obtenerUsuarioActual() {
                 };
                 // Guardar en localStorage después de obtener del servidor
                 localStorage.setItem('damabrava_usuario', JSON.stringify(usuarioInfo));
+                actualizarPermisos(usuarioInfo);
                 return true;
             } else {
                 // Si falla el servidor, intentar recuperar del localStorage

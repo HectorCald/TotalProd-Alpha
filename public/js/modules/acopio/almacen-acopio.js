@@ -168,7 +168,7 @@ function renderInitialHTML() {
                         <p class="titulo">Almacen acopio</p>
                     </div>
                     <div class="botones-container">
-                        ${tipoEvento === 'almacen' ? `
+                        ${tipoEvento === 'almacen' && tienePermiso('creacion')? `
                         <button class="btn-etiquetas btn blue"><i class='bx bx-purchase-tag'></i></button>
                         <button class="btn-crear-producto btn orange"> <i class='bx bx-plus'></i></button>
                         ` : ''}
@@ -277,10 +277,8 @@ function eventosAlmacenAcopio() {
     const botonesEtiquetas = document.querySelectorAll('.filtros-view.etiquetas-filter .btn-filtro');
     const botonesCantidad = document.querySelectorAll('.filtros-view.cantidad-filter .btn-filtro');
     const inputBusqueda = document.querySelector('.search');
-    const buscador = document.querySelector('.buscador-view')
 
-    const btnCrearProducto = document.querySelectorAll('.btn-crear-producto');
-    const btnEtiquetas = document.querySelectorAll('.btn-etiquetas');
+
 
     const items = document.querySelectorAll('.item-view');
     const btnLimpiar = document.querySelector('.limpiar-search');
@@ -295,14 +293,7 @@ function eventosAlmacenAcopio() {
         updateHTMLWithData();
     });
 
-    if (tienePermiso('creacion')) {
-        btnCrearProducto.forEach(btn => {
-            btn.addEventListener('click', crearProducto);
-        })
-        btnEtiquetas.forEach(btn => {
-            btn.addEventListener('click', gestionarEtiquetas);
-        })
-    }
+
 
 
 
@@ -486,6 +477,16 @@ function eventosAlmacenAcopio() {
         });
     }
     if (tipoEvento === 'almacen') {
+        const btnCrearProducto = document.querySelectorAll('.btn-crear-producto');
+        const btnEtiquetas = document.querySelectorAll('.btn-etiquetas');
+        if (tienePermiso('creacion')) {
+            btnCrearProducto.forEach(btn => {
+                btn.addEventListener('click', crearProducto);
+            })
+            btnEtiquetas.forEach(btn => {
+                btn.addEventListener('click', gestionarEtiquetas);
+            })
+        }
         items.forEach(item => {
             item.addEventListener('click', function () {
                 const registroId = this.dataset.id;
@@ -941,6 +942,302 @@ function eventosAlmacenAcopio() {
                     }
                 }
             }
+        }
+        function crearProducto() {
+            const contenido = document.querySelector('.screen');
+            const registrationHTML = `
+                <div class="top-view">
+                    <div class="encabezado">
+                        <div class="titulo-back">
+                            <button class="atras-screen" onclick="ocultarScreen();"><i class='bx bx-arrow-back'></i></button>
+                            <p class="titulo">Nuevo producto</p>
+                        </div>
+                        <div class="botones-container">
+                            <button class="btn-crear-producto btn orange"><i class="bx bx-plus"></i> Añadir</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="contenido">
+                    <p class="subtitulo">Información básica</p>
+                    <div class="entrada">
+                        <i class='bx bx-cube'></i>
+                        <div class="input">
+                            <p class="detalle">Producto</p>
+                            <input class="producto" type="text" autocomplete="off" placeholder=" " required>
+                        </div>
+                    </div>
+    
+                    <p class="subtitulo">Peso Bruto</p>
+                    <div class="campo-horizontal">
+                        <div class="entrada">
+                            <i class='bx bx-package'></i>
+                            <div class="input">
+                                <p class="detalle">Peso Bruto</p>
+                                <input class="peso-bruto" type="number" autocomplete="off" placeholder=" " required>
+                            </div>
+                        </div>
+                        <div class="entrada">
+                            <i class='bx bx-hash'></i>
+                            <div class="input">
+                                <p class="detalle">Lote</p>
+                                <input class="lote-bruto" type="number" autocomplete="off" placeholder=" " required>
+                            </div>
+                        </div>
+                    </div>
+    
+                    <p class="subtitulo">Peso Prima</p>
+                
+                <div class="campo-horizontal">
+                        <div class="entrada">
+                            <i class='bx bx-package'></i>
+                            <div class="input">
+                                <p class="detalle">Peso Prima</p>
+                                <input class="peso-prima" type="number" autocomplete="off" placeholder=" " required>
+                            </div>
+                        </div>
+                        <div class="entrada">
+                            <i class='bx bx-hash'></i>
+                            <div class="input">
+                                <p class="detalle">Lote</p>
+                                <input class="lote-prima" type="number" autocomplete="off" placeholder=" " required>
+                            </div>
+                        </div>
+                </div>
+    
+                    <p class="subtitulo">Etiquetas</p>
+                    <div class="etiquetas-container">
+                        <div class="etiquetas-actuales">
+                        </div>
+                    </div>
+                    <div class="entrada">
+                        <i class='bx bx-purchase-tag'></i>
+                        <div class="input">
+                            <p class="detalle">Selecciona nueva etiqueta</p>
+                            <select class="select-etiqueta" required>
+                                <option value=""></option>
+                                ${etiquetasAcopio.map(etiqueta =>
+                `<option value="${etiqueta.etiqueta}">${etiqueta.etiqueta}</option>`
+            ).join('')}
+                            </select>
+                            <button type="button" class="btn-agregar-etiqueta"><i class='bx bx-plus'></i></button>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            contenido.innerHTML = registrationHTML;
+            mostrarScreen();
+
+            // Event handlers for tags
+            const btnAgregarEtiqueta = contenido.querySelector('.btn-agregar-etiqueta');
+            const selectEtiqueta = contenido.querySelector('.select-etiqueta');
+            const etiquetasActuales = contenido.querySelector('.etiquetas-actuales');
+
+            btnAgregarEtiqueta.addEventListener('click', () => {
+                const etiquetaSeleccionada = selectEtiqueta.value;
+                if (etiquetaSeleccionada) {
+                    const nuevaEtiqueta = document.createElement('div');
+                    nuevaEtiqueta.className = 'etiqueta-item';
+                    nuevaEtiqueta.dataset.valor = etiquetaSeleccionada;
+                    nuevaEtiqueta.innerHTML = `
+                    <i class='bx bx-purchase-tag'></i>
+                    <span>${etiquetaSeleccionada}</span>
+                    <button type="button" class="btn-quitar-etiqueta"><i class='bx bx-x'></i></button>
+                `;
+                    etiquetasActuales.appendChild(nuevaEtiqueta);
+                    selectEtiqueta.querySelector(`option[value="${etiquetaSeleccionada}"]`).remove();
+                    selectEtiqueta.value = '';
+                }
+            });
+
+            etiquetasActuales.addEventListener('click', (e) => {
+                if (e.target.closest('.btn-quitar-etiqueta')) {
+                    const etiquetaItem = e.target.closest('.etiqueta-item');
+                    const valorEtiqueta = etiquetaItem.dataset.valor;
+                    const option = document.createElement('option');
+                    option.value = valorEtiqueta;
+                    option.textContent = valorEtiqueta;
+                    selectEtiqueta.appendChild(option);
+                    etiquetaItem.remove();
+                }
+            });
+
+            // Agregar evento al botón guardar
+            const btnCrear = contenido.querySelector('.btn-crear-producto');
+            btnCrear.addEventListener('click', confirmarCreacion);
+
+            async function confirmarCreacion() {
+                const producto = document.querySelector('.nuevo-producto .producto').value.trim();
+                const pesoBruto = document.querySelector('.nuevo-producto .peso-bruto').value.trim();
+                const loteBruto = document.querySelector('.nuevo-producto .lote-bruto').value.trim();
+                const pesoPrima = document.querySelector('.nuevo-producto .peso-prima').value.trim();
+                const lotePrima = document.querySelector('.nuevo-producto .lote-prima').value.trim();
+
+                // Get selected tags
+                const etiquetasSeleccionadas = Array.from(document.querySelectorAll('.etiquetas-actuales .etiqueta-item'))
+                    .map(item => item.dataset.valor)
+                    .join(';');
+
+                if (!producto || !pesoBruto || !loteBruto || !pesoPrima || !lotePrima) {
+                    mostrarNotificacion({
+                        message: 'Por favor complete todos los campos obligatorios',
+                        type: 'warning',
+                        duration: 3500
+                    });
+                    return;
+                }
+
+                try {
+                    const signal = await mostrarProgreso('.pro-new');
+                    const response = await fetch('/crear-producto-acopio', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            producto,
+                            pesoBruto,
+                            loteBruto,
+                            pesoPrima,
+                            lotePrima,
+                            etiquetas: etiquetasSeleccionadas
+                        })
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        const newFila = data.id;
+                        await obtenerAlmacenAcopio();
+                        info(newFila)
+                        updateHTMLWithData();
+                        mostrarNotificacion({
+                            message: 'Producto creado correctamente',
+                            type: 'success',
+                            duration: 3000
+                        });
+                    } else {
+                        throw new Error(data.error || 'Error al crear el producto');
+                    }
+                } catch (error) {
+                    if (error.message === 'cancelled') {
+                        console.log('Operación cancelada por el usuario');
+                        return;
+                    }
+                    console.error('Error:', error);
+                    mostrarNotificacion({
+                        message: error.message || 'Error al procesar la operación',
+                        type: 'error',
+                        duration: 3500
+                    });
+                } finally {
+                    ocultarProgreso('.pro-new');
+                }
+            }
+        }
+        function gestionarEtiquetas() {
+            const contenido = document.querySelector('.screen');
+            const etiquetasHTML = etiquetasAcopio.map(etiqueta => `
+                <div class="etiqueta-item" data-id="${etiqueta.id}">
+                    <i class='bx bx-purchase-tag'></i>
+                    <span>${etiqueta.etiqueta}</span>
+                    <button type="button" class="btn-quitar-etiqueta"><i class='bx bx-x'></i></button>
+                </div>
+            `).join('');
+
+            const registrationHTML = `
+                <div class="top-view">
+                    <div class="encabezado">
+                        <div class="titulo-back">
+                            <button class="atras-screen" onclick="ocultarScreen();"><i class='bx bx-arrow-back'></i></button>
+                            <p class="titulo">Gestionar etiquetas</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="contenido">
+                    <p class="subtitulo">Etiquetas existentes</p>
+                    <div class="etiquetas-container">
+                        <div class="etiquetas-actuales">
+                            ${etiquetasHTML}
+                        </div>
+                    </div>
+    
+                    <p class="subtitulo">Agregar nueva etiqueta</p>
+                    <div class="entrada">
+                        <i class='bx bx-purchase-tag'></i>
+                        <div class="input">
+                            <p class="detalle">Nueva etiqueta</p>
+                            <input class="nueva-etiqueta" type="text" autocomplete="off" placeholder=" " required>
+                            <button type="button" class="btn-agregar-etiqueta-temp"><i class='bx bx-plus'></i></button>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            contenido.innerHTML = registrationHTML;
+            mostrarScreen();
+
+            const btnAgregarTemp = contenido.querySelector('.btn-agregar-etiqueta-temp');
+            const etiquetasActuales = contenido.querySelector('.etiquetas-actuales');
+
+            btnAgregarTemp.addEventListener('click', async () => {
+                const nuevaEtiqueta = document.querySelector('.nueva-etiqueta').value.trim();
+                if (nuevaEtiqueta) {
+                    try {
+                        mostrarCarga();
+                        const response = await fetch('/agregar-etiqueta-acopio', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ etiqueta: nuevaEtiqueta })
+                        });
+
+                        if (!response.ok) throw new Error('Error al agregar etiqueta');
+
+                        const data = await response.json();
+                        if (data.success) {
+                            await obtenerEtiquetasAcopio();
+                            updateHTMLWithData();
+                            gestionarEtiquetas();
+                            document.querySelector('.nueva-etiqueta').value = '';
+                            mostrarNotificacion('Se agrego la etiquta', { tipo: 'exito', duracion: 2000 })
+                        }
+                    } catch (error) {
+                        console.error('Error:', error);
+                    } finally {
+                        ocultarCarga();
+                    }
+                }
+            });
+
+            etiquetasActuales.addEventListener('click', async (e) => {
+                if (e.target.closest('.btn-quitar-etiqueta')) {
+                    try {
+                        const etiquetaItem = e.target.closest('.etiqueta-item');
+                        const etiquetaId = etiquetaItem.dataset.id;
+
+                        mostrarCarga();
+                        const response = await fetch(`/eliminar-etiqueta-acopio/${etiquetaId}`, {
+                            method: 'DELETE'
+                        });
+
+                        if (!response.ok) throw new Error('Error al eliminar etiqueta');
+
+                        const data = await response.json();
+                        if (data.success) {
+                            await obtenerEtiquetasAcopio();
+                            updateHTMLWithData();
+                            gestionarEtiquetas();
+                            mostrarNotificacion('Se elimino la etiqueta', { tipo: 'exito', duracion: 2000 })
+                        }
+                    } catch (error) {
+                        console.error('Error:', error);
+                    } finally {
+                        ocultarCarga();
+                    }
+                }
+            });
         }
     } else if (tipoEvento === 'orden') {
         const botonFlotante = document.querySelector('.btn-flotante-pedidos');
@@ -1879,304 +2176,6 @@ function eventosAlmacenAcopio() {
         if (botonFlotante) {
             botonFlotante.style.display = 'none';
         }
-    }
-
-
-    function crearProducto() {
-        const contenido = document.querySelector('.screen');
-        const registrationHTML = `
-            <div class="top-view">
-                <div class="encabezado">
-                    <div class="titulo-back">
-                        <button class="atras-screen" onclick="ocultarScreen();"><i class='bx bx-arrow-back'></i></button>
-                        <p class="titulo">Nuevo producto</p>
-                    </div>
-                    <div class="botones-container">
-                        <button class="btn-crear-producto btn orange"><i class="bx bx-plus"></i> Añadir</button>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="contenido">
-                <p class="subtitulo">Información básica</p>
-                <div class="entrada">
-                    <i class='bx bx-cube'></i>
-                    <div class="input">
-                        <p class="detalle">Producto</p>
-                        <input class="producto" type="text" autocomplete="off" placeholder=" " required>
-                    </div>
-                </div>
-
-                <p class="subtitulo">Peso Bruto</p>
-                <div class="campo-horizontal">
-                    <div class="entrada">
-                        <i class='bx bx-package'></i>
-                        <div class="input">
-                            <p class="detalle">Peso Bruto</p>
-                            <input class="peso-bruto" type="number" autocomplete="off" placeholder=" " required>
-                        </div>
-                    </div>
-                    <div class="entrada">
-                        <i class='bx bx-hash'></i>
-                        <div class="input">
-                            <p class="detalle">Lote</p>
-                            <input class="lote-bruto" type="number" autocomplete="off" placeholder=" " required>
-                        </div>
-                    </div>
-                </div>
-
-                <p class="subtitulo">Peso Prima</p>
-            
-            <div class="campo-horizontal">
-                    <div class="entrada">
-                        <i class='bx bx-package'></i>
-                        <div class="input">
-                            <p class="detalle">Peso Prima</p>
-                            <input class="peso-prima" type="number" autocomplete="off" placeholder=" " required>
-                        </div>
-                    </div>
-                    <div class="entrada">
-                        <i class='bx bx-hash'></i>
-                        <div class="input">
-                            <p class="detalle">Lote</p>
-                            <input class="lote-prima" type="number" autocomplete="off" placeholder=" " required>
-                        </div>
-                    </div>
-            </div>
-
-                <p class="subtitulo">Etiquetas</p>
-                <div class="etiquetas-container">
-                    <div class="etiquetas-actuales">
-                    </div>
-                </div>
-                <div class="entrada">
-                    <i class='bx bx-purchase-tag'></i>
-                    <div class="input">
-                        <p class="detalle">Selecciona nueva etiqueta</p>
-                        <select class="select-etiqueta" required>
-                            <option value=""></option>
-                            ${etiquetasAcopio.map(etiqueta =>
-            `<option value="${etiqueta.etiqueta}">${etiqueta.etiqueta}</option>`
-        ).join('')}
-                        </select>
-                        <button type="button" class="btn-agregar-etiqueta"><i class='bx bx-plus'></i></button>
-                    </div>
-                </div>
-            </div>
-        `;
-
-        contenido.innerHTML = registrationHTML;
-        mostrarScreen();
-
-        // Event handlers for tags
-        const btnAgregarEtiqueta = contenido.querySelector('.btn-agregar-etiqueta');
-        const selectEtiqueta = contenido.querySelector('.select-etiqueta');
-        const etiquetasActuales = contenido.querySelector('.etiquetas-actuales');
-
-        btnAgregarEtiqueta.addEventListener('click', () => {
-            const etiquetaSeleccionada = selectEtiqueta.value;
-            if (etiquetaSeleccionada) {
-                const nuevaEtiqueta = document.createElement('div');
-                nuevaEtiqueta.className = 'etiqueta-item';
-                nuevaEtiqueta.dataset.valor = etiquetaSeleccionada;
-                nuevaEtiqueta.innerHTML = `
-                <i class='bx bx-purchase-tag'></i>
-                <span>${etiquetaSeleccionada}</span>
-                <button type="button" class="btn-quitar-etiqueta"><i class='bx bx-x'></i></button>
-            `;
-                etiquetasActuales.appendChild(nuevaEtiqueta);
-                selectEtiqueta.querySelector(`option[value="${etiquetaSeleccionada}"]`).remove();
-                selectEtiqueta.value = '';
-            }
-        });
-
-        etiquetasActuales.addEventListener('click', (e) => {
-            if (e.target.closest('.btn-quitar-etiqueta')) {
-                const etiquetaItem = e.target.closest('.etiqueta-item');
-                const valorEtiqueta = etiquetaItem.dataset.valor;
-                const option = document.createElement('option');
-                option.value = valorEtiqueta;
-                option.textContent = valorEtiqueta;
-                selectEtiqueta.appendChild(option);
-                etiquetaItem.remove();
-            }
-        });
-
-        // Agregar evento al botón guardar
-        const btnCrear = contenido.querySelector('.btn-crear-producto');
-        btnCrear.addEventListener('click', confirmarCreacion);
-
-        async function confirmarCreacion() {
-            const producto = document.querySelector('.nuevo-producto .producto').value.trim();
-            const pesoBruto = document.querySelector('.nuevo-producto .peso-bruto').value.trim();
-            const loteBruto = document.querySelector('.nuevo-producto .lote-bruto').value.trim();
-            const pesoPrima = document.querySelector('.nuevo-producto .peso-prima').value.trim();
-            const lotePrima = document.querySelector('.nuevo-producto .lote-prima').value.trim();
-
-            // Get selected tags
-            const etiquetasSeleccionadas = Array.from(document.querySelectorAll('.etiquetas-actuales .etiqueta-item'))
-                .map(item => item.dataset.valor)
-                .join(';');
-
-            if (!producto || !pesoBruto || !loteBruto || !pesoPrima || !lotePrima) {
-                mostrarNotificacion({
-                    message: 'Por favor complete todos los campos obligatorios',
-                    type: 'warning',
-                    duration: 3500
-                });
-                return;
-            }
-
-            try {
-                const signal = await mostrarProgreso('.pro-new');
-                const response = await fetch('/crear-producto-acopio', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        producto,
-                        pesoBruto,
-                        loteBruto,
-                        pesoPrima,
-                        lotePrima,
-                        etiquetas: etiquetasSeleccionadas
-                    })
-                });
-
-                const data = await response.json();
-
-                if (data.success) {
-                    const newFila = data.id;
-                    await obtenerAlmacenAcopio();
-                    info(newFila)
-                    updateHTMLWithData();
-                    mostrarNotificacion({
-                        message: 'Producto creado correctamente',
-                        type: 'success',
-                        duration: 3000
-                    });
-                } else {
-                    throw new Error(data.error || 'Error al crear el producto');
-                }
-            } catch (error) {
-                if (error.message === 'cancelled') {
-                    console.log('Operación cancelada por el usuario');
-                    return;
-                }
-                console.error('Error:', error);
-                mostrarNotificacion({
-                    message: error.message || 'Error al procesar la operación',
-                    type: 'error',
-                    duration: 3500
-                });
-            } finally {
-                ocultarProgreso('.pro-new');
-            }
-        }
-    }
-    function gestionarEtiquetas() {
-        const contenido = document.querySelector('.screen');
-        const etiquetasHTML = etiquetasAcopio.map(etiqueta => `
-            <div class="etiqueta-item" data-id="${etiqueta.id}">
-                <i class='bx bx-purchase-tag'></i>
-                <span>${etiqueta.etiqueta}</span>
-                <button type="button" class="btn-quitar-etiqueta"><i class='bx bx-x'></i></button>
-            </div>
-        `).join('');
-
-        const registrationHTML = `
-            <div class="top-view">
-                <div class="encabezado">
-                    <div class="titulo-back">
-                        <button class="atras-screen" onclick="ocultarScreen();"><i class='bx bx-arrow-back'></i></button>
-                        <p class="titulo">Gestionar etiquetas</p>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="contenido">
-                <p class="subtitulo">Etiquetas existentes</p>
-                <div class="etiquetas-container">
-                    <div class="etiquetas-actuales">
-                        ${etiquetasHTML}
-                    </div>
-                </div>
-
-                <p class="subtitulo">Agregar nueva etiqueta</p>
-                <div class="entrada">
-                    <i class='bx bx-purchase-tag'></i>
-                    <div class="input">
-                        <p class="detalle">Nueva etiqueta</p>
-                        <input class="nueva-etiqueta" type="text" autocomplete="off" placeholder=" " required>
-                        <button type="button" class="btn-agregar-etiqueta-temp"><i class='bx bx-plus'></i></button>
-                    </div>
-                </div>
-            </div>
-        `;
-
-        contenido.innerHTML = registrationHTML;
-        mostrarScreen();
-
-        const btnAgregarTemp = contenido.querySelector('.btn-agregar-etiqueta-temp');
-        const etiquetasActuales = contenido.querySelector('.etiquetas-actuales');
-
-        btnAgregarTemp.addEventListener('click', async () => {
-            const nuevaEtiqueta = document.querySelector('.nueva-etiqueta').value.trim();
-            if (nuevaEtiqueta) {
-                try {
-                    mostrarCarga();
-                    const response = await fetch('/agregar-etiqueta-acopio', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ etiqueta: nuevaEtiqueta })
-                    });
-
-                    if (!response.ok) throw new Error('Error al agregar etiqueta');
-
-                    const data = await response.json();
-                    if (data.success) {
-                        await obtenerEtiquetasAcopio();
-                        updateHTMLWithData();
-                        gestionarEtiquetas();
-                        document.querySelector('.nueva-etiqueta').value = '';
-                        mostrarNotificacion('Se agrego la etiquta', { tipo: 'exito', duracion: 2000 })
-                    }
-                } catch (error) {
-                    console.error('Error:', error);
-                } finally {
-                    ocultarCarga();
-                }
-            }
-        });
-
-        etiquetasActuales.addEventListener('click', async (e) => {
-            if (e.target.closest('.btn-quitar-etiqueta')) {
-                try {
-                    const etiquetaItem = e.target.closest('.etiqueta-item');
-                    const etiquetaId = etiquetaItem.dataset.id;
-
-                    mostrarCarga();
-                    const response = await fetch(`/eliminar-etiqueta-acopio/${etiquetaId}`, {
-                        method: 'DELETE'
-                    });
-
-                    if (!response.ok) throw new Error('Error al eliminar etiqueta');
-
-                    const data = await response.json();
-                    if (data.success) {
-                        await obtenerEtiquetasAcopio();
-                        updateHTMLWithData();
-                        gestionarEtiquetas();
-                        mostrarNotificacion('Se elimino la etiqueta', { tipo: 'exito', duracion: 2000 })
-                    }
-                } catch (error) {
-                    console.error('Error:', error);
-                } finally {
-                    ocultarCarga();
-                }
-            }
-        });
     }
     aplicarFiltros();
 }
