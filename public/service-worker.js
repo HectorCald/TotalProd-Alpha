@@ -1,5 +1,5 @@
-const CACHE_NAME = 'TotalProd-v4';
-const CACHE_RUNTIME = 'TotalProd-runtime-v4';
+const CACHE_NAME = 'TotalProd-v5';
+const CACHE_RUNTIME = 'TotalProd-runtime-v5';
 
 const APP_SHELL = [
     '/',
@@ -55,9 +55,6 @@ const APP_SHELL = [
     'https://cdn.jsdelivr.net/npm/boxicons@2.0.7/fonts/boxicons.woff2',
     'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css'
 ];
-
-// Rutas que NO requieren autenticación
-const PUBLIC_ROUTES = ['/', '/login'];
 
 // INSTALACIÓN: Cachea recursos críticos solamente
 self.addEventListener('install', event => {
@@ -120,23 +117,22 @@ self.addEventListener('activate', event => {
 
 // ESTRATEGIA MEJORADA: Network-First para navegación, Cache-First para recursos
 self.addEventListener('fetch', event => {
-    // Solo interceptar peticiones HTTP/HTTPS
-    if (!event.request.url.startsWith('http')) {
-        return;
-    }
+    if (!event.request.url.startsWith('http')) return;
+    if (event.request.method !== 'GET') return;
 
-    // NO interceptar peticiones que no sean GET
-    if (event.request.method !== 'GET') {
+    // Solo interceptar recursos estáticos y navegación
+    const isStatic = /\.(css|js|png|jpg|jpeg|gif|webp|svg|ico|woff|woff2)$/i.test(event.request.url);
+    const isNavigation = event.request.mode === 'navigate';
+    if (!isStatic && !isNavigation) {
+        // NO interceptar APIs ni endpoints de datos, deja que el navegador haga la petición normal
         return;
     }
 
     event.respondWith(
         caches.match(event.request).then(cachedResponse => {
-            if (cachedResponse) {
-                // Siempre responde desde el cache si existe
-                return cachedResponse;
-            }
-            // Si no está en cache, intenta la red y guarda en cache para la próxima vez
+            // Si está en cache, responde del cache
+            if (cachedResponse) return cachedResponse;
+            // Si no está en cache, intenta la red
             return fetch(event.request).then(networkResponse => {
                 if (networkResponse && networkResponse.ok) {
                     const responseClone = networkResponse.clone();
@@ -146,8 +142,8 @@ self.addEventListener('fetch', event => {
                 }
                 return networkResponse;
             }).catch(() => {
-                // Fallback opcional: puedes personalizar para imágenes, etc.
-                return new Response('', { status: 404 });
+                // Si la red falla, intenta el cache de nuevo (por si acaso)
+                return caches.match(event.request).then(fallback => fallback || new Response('', { status: 404 }));
             });
         })
     );

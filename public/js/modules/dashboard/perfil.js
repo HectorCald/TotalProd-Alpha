@@ -27,7 +27,8 @@ export function mostrarPerfil() {
             const response = await fetch('/cerrar-sesion', { method: 'POST' });
             if (response.ok) {
                 localStorage.removeItem('damabrava_usuario');
-                window.location.href = '/';
+                localStorage.removeItem('auth_token')
+                window.location.href = '/login';
             }
         } catch (error) {
             console.error('Error al cerrar sesión:', error);

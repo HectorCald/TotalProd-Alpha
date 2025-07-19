@@ -125,7 +125,7 @@ app.set('views', join(__dirname, 'views'));
 function requireAuth(req, res, next) {
     const token = req.cookies.token || req.headers.authorization?.split(' ')[1];
     if (!token) {
-        return res.redirect('/');
+        return res.redirect('/login');
     }
     try {
         const decoded = jwt.verify(token, JWT_SECRET);
@@ -167,7 +167,7 @@ app.get('/', (req, res) => {
 app.get('/login', (req, res) => {
     res.render('login')
 });
-app.get('/dashboard', (req, res) => {
+app.get('/dashboard',requireAuth,(req, res) => {
     res.render('dashboard')
 });
 app.get('/dashboard_otro', (req, res) => {
@@ -349,21 +349,25 @@ app.post('/iniciar-sesion', async (req, res) => {
                             { expiresIn: '89280h' }
                         );
                 
-                        // NO SETEES LA COOKIE
+                        // Setea la cookie (puedes ajustar httpOnly y secure según tu necesidad)
+                        res.cookie('token', token, {
+                            httpOnly: false, // true = solo backend, false = frontend también puede leerla
+                            secure: false,   // true en producción con HTTPS
+                            maxAge: 10 * 365 * 24 * 60 * 60 * 1000 // 10 años
+                        });
                 
                         // Determine dashboard URL based on spreadsheet ID
                         const dashboardUrl = spreadsheetId === process.env.SPREADSHEET_ID_1 ? '/dashboard' : '/dashboard_otro';
                 
                         return res.json({
                             success: true,
-                            token, // <-- ¡Asegúrate de incluir esto!
+                            token, // <-- para el frontend (localStorage)
                             redirect: dashboardUrl,
                             user: {
                                 nombre: usuario[1],
                                 email: usuario[7]
                             }
                         });
-                    
                     } else {
                         return res.json({
                             success: false,

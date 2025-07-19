@@ -211,5 +211,4 @@ document.addEventListener('DOMContentLoaded', async () => {
         window.location.href = '/dashboard';
     }
     inicializarApp();
-    
 });
