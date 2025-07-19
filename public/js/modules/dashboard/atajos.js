@@ -6,6 +6,7 @@ const MAX_ATAJOS = 5;
 let modoEliminar = false;
 
 function renderAtajosPrincipales() {
+    console.log('[Atajos] renderAtajosPrincipales, atajosSeleccionados:', atajosSeleccionados);
     const contenedor = document.getElementById('atajos-principales');
     if (!contenedor) return;
     contenedor.innerHTML = '';
@@ -100,6 +101,7 @@ function renderAtajosPrincipales() {
 function guardarAtajosPrincipales() {
     if (!usuarioInfo || !usuarioInfo.id) return;
     localStorage.setItem('atajos_principales_' + usuarioInfo.id, JSON.stringify(atajosSeleccionados));
+    console.log(localStorage.getItem('atajios_principales'))
 }
 function cargarAtajosPrincipales() {
     if (!usuarioInfo || !usuarioInfo.id) return [];
@@ -173,6 +175,7 @@ function agregarAtajo(atajo, index) {
     renderAtajosPrincipales();
     guardarAtajosPrincipales();
     ocultarAtajosAll();
+
 
     const contenedor = document.getElementById('atajos-principales');
     const btns = contenedor.querySelectorAll('.atajo');

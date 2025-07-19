@@ -338,13 +338,26 @@ const overlay = document.querySelector('.overlay')
 async function obtenerUsuarioActual() {
     try {
         mostrarCargaObtener();
-        const usuarioGuardado = localStorage.getItem('damabrava_usuario');
-        if (usuarioGuardado) {
+        const usuarioGuardadoStr = localStorage.getItem('damabrava_usuario');
+        if (usuarioGuardadoStr) {
+            const usuarioGuardado = JSON.parse(usuarioGuardadoStr);
+            const nombreCompleto = usuarioGuardado.nombre.split(' ');
+            usuarioInfo = {
+                id: usuarioGuardado.id,
+                nombre: nombreCompleto[0] || '',
+                apellido: nombreCompleto[1] || '',
+                telefono: usuarioGuardado.telefono,
+                email: usuarioGuardado.email,
+                rol: usuarioGuardado.rol,
+                estado: usuarioGuardado.estado,
+                plugins: usuarioGuardado.plugins,
+                permisos: usuarioGuardado.permisos,
+            };
             ocultarCargaObtener();
         }
+        (async () => {
             const response = await fetch('/obtener-usuario-actual');
             const data = await response.json();
-            (async () => {
             if (data.success) {
                 const nombreCompleto = data.usuario.nombre.split(' ');
                 usuarioInfo = {
@@ -364,9 +377,9 @@ async function obtenerUsuarioActual() {
                 return true;
             } else {
                 // Si falla el servidor, intentar recuperar del localStorage
-                const usuarioGuardado = localStorage.getItem('damabrava_usuario');
-                if (usuarioGuardado) {
-                    usuarioInfo = JSON.parse(usuarioGuardado);
+                const usuarioGuardadoStr = localStorage.getItem('damabrava_usuario');
+                if (usuarioGuardadoStr) {
+                    usuarioInfo = JSON.parse(usuarioGuardadoStr);
                     return true;
                 }
                 return false;
@@ -375,10 +388,9 @@ async function obtenerUsuarioActual() {
     } catch (error) {
         console.error('Error al obtener datos del usuario:', error);
         return false;
-    }finally{
+    } finally {
         ocultarCargaObtener();
     }
-
 }
 
 function ocultarOverlay() {
@@ -547,8 +559,7 @@ function actualizarBotonesFooter() {
 
 
 document.addEventListener('DOMContentLoaded', async () => {
-    obtenerUsuarioActual();
-    actualizarPermisos(usuarioInfo)
+    await obtenerUsuarioActual();
     overlayClick();
     cargarAtajos();
     activarFooterBtns();
