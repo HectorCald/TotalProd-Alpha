@@ -2,7 +2,7 @@
     position: fixed;
     top: 50px;
     left: 50%;
-    height: calc(100% - 130px);
+    height: calc(100% - 140px);
     width: calc(100% - 20px);
     display: flex;
     justify-content:flex-start;

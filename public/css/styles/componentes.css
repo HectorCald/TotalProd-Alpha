@@ -525,21 +525,23 @@
     gap: 5px;
     overflow-x: auto;
     width: 100%;
-    height: 40px;
+    height: 35px;
     padding-block: 2px;
 
     .btn-filtro {
-        padding: 10px 15px;
+        padding: 5px 10px;
         background-color: #28b4981b;
         border: none;
-        border-radius: 10px;
+        border-radius: 8px;
         color: var(--cuarto);
         transition: all 0.5s ease-in-out;
         white-space: nowrap;
-        height: 35px;
+        height: 30px;
         display: flex;
         justify-content: center;
         align-items: center;
+        font-size: 15px;
+        font-weight: var(--weight-semibold);
     }
 
     .btn-filtro.activo {
@@ -548,13 +550,17 @@
     }
 
     .tipo, .select {
-        padding: 3px 15px;
+        padding-inline: 5px;
         border: none;
-        border-radius: 10px;
+        border-radius: 8px;
         background: var(--cuarto);
         color: white;
-        transition: all 0.5s ease-in-out;
-        height: 35px;
+        height: 30px;
+        font-size: 15px;
+        font-weight: var(--weight-semibold);
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
 }
 

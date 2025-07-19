@@ -521,7 +521,7 @@ function renderInitialHTML() {
                 </div>
                  
                 <div class="botones-container">
-                    ${tienePermiso('creacion') && tipoEvento === 'Administración' ? `
+                    ${tipoEvento === 'almacen' && tienePermiso(creacion)? `
                     <button class="btn-crear-producto btn trans"> <i class='bx bx-plus'></i></button>
                     <button class="btn-etiquetas btn blue"><i class='bx bx-purchase-tag'></i></button>
                     <button class="btn-precios btn orange"><i class='bx bx-dollar'></i></button>
@@ -548,10 +548,10 @@ function renderInitialHTML() {
                 <button class="btn-filtro activo"><i class='bx bx-sort-a-z'></i></button>
                 <button class="btn-filtro"><i class='bx bx-sort-z-a'></i></button>
                 <button class="btn-filtro sueltas">Sueltas</button>
-                <select class="precios-select select" style="width:auto">
+                <select class="precios-select select">
                     <option value="">Precios</option>
                 </select>
-                <select name="tipoEventos" id="eventoTipo" class="tipo">
+                <select name="tipoEventos" id="eventoTipo" class="select">
                     <option value="almacen">Almacen</option>
                     <option value="conteo">Conteo</option>
                     <option value="salidas">Salida</option>
