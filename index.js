@@ -177,10 +177,13 @@ app.get('/', (req, res) => {
         }
     }
 
-    res.render('login');
+    res.redirect('/login')
 });
 app.get('/dashboard', requireAuth, (req, res) => {
     res.render('dashboard')
+});
+app.get('/login', (req, res) => {
+    res.render('login')
 });
 app.get('/dashboard_otro', requireAuth, (req, res) => {
     res.render('dashboard_otro')
@@ -323,7 +326,7 @@ app.post('/eliminar-fcm-token', requireAuth, async (req, res) => {
 });
 
 /* ==================== RUTAS DE AUTENTICACION ==================== */
-app.post('/login', async (req, res) => {
+app.post('/iniciar-sesion', async (req, res) => {
     const { email, password } = req.body;
 
     const spreadsheetIds = [
